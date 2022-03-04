@@ -20,3 +20,14 @@ def extract():
                 # 파일 파이썬이 이해할 수 있는 형태로
                 # 파일 데이터베이스로 ... 그러면 Extract가 아니잖아?
                 AddonSavedVariableFile.close
+            if file == 'USPF.lua':
+                #import subprocess
+                #result = subprocess.check_output(['lua', '-l', 'USPFUploader', 'e', 'test()'])
+                print( )
+
+import os
+f = open("C:/Users/" + format(os.getlogin()) + "/OneDrive/Documents/Elder Scrolls Online/live/SavedVariables"+'/USPF.lua')
+data = f.read()
+#print(data)
+from slpp import slpp as lua
+f.close()

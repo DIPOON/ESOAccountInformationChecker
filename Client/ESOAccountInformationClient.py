@@ -5,15 +5,18 @@ while True:
     if Command.lower() == 'exit':
         break
     if Command.lower() == 'extract':
-        import Extractor
-        Extractor.extract()
+        # extract 프로그램들을 실행
     if Command.lower() == 'upload':
+        # 데이터 얻어와서
+        # 내가 만들어둔 csv 파일 읽기
         import requests
         WantedData = {"name" : "NameExample",
                       "rank" : "RankExample",
                       "basic" : 54,
                       "extra" : 3
 	                }
+        # ID PW 헤더 더하기
+        # 쏘세요!
         r = requests.post('http://3.35.209.143/create_process.php', data = WantedData)
         print(r.text)
     else:
