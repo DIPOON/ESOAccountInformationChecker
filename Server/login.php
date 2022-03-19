@@ -25,15 +25,17 @@
       }
       else
       {
-	  //if(password_verify($Password, $EncryptedPassword))
-          if($Password = $EncryptedPassword)
-          {
-	      echo '<script> alert("잘 로그인할 수 있게 되었다."); </script>'; 
+	  if(password_verify($Password, $EncryptedPassword))
+	  {
+	      session_start();
+	      $_SESSION['user_id'] = $Username;
+	      header('Location: index.php');
 	  }
           else
 	  {
-		  $NoPassword = 1;
-		  echo '<script> alert("비밀번호 맞는게 없나본대요 ."); </script>';
+	      $NoPassword = 1;
+	      echo '<script> alert("비밀번호 맞는게 없나본대요 ."); </script>';
+              //header('Location: index.php');
 	  }
       }
   }
