@@ -15,14 +15,14 @@
             'extra' => mysqli_real_escape_string($conn, $_POST['extra'])
     );
 
-    $sql="INSERT INTO PayManagement (name, powerrank, basicpay, plus)
+    $sql = "INSERT INTO PayManagement (name, powerrank, basicpay, plus)
           VALUES (
                   '{$filtered['name']}',
                   '{$filtered['rank']}',
                   '{$filtered['basic']}',
                   '{$filtered['extra']}'
                   )";
-    $result=mysqli_query($conn, $sql);
+    $result = mysqli_query($conn, $sql);
     if($result === false) {
         echo error_log(mysqli_error($conn));
     }

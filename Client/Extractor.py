@@ -1,33 +1,29 @@
-def extract():
-    # 먼저 문서 내부에 있는 엘더스크롤 savedvariables의 여러 저장된 루아 파일을 확인합니다.
-    # 자체 개발 에드온의 정보를 확인할 수 있지만 테스트 및 개발 단축을 위해 이미 있는 파일들을 확인해봅시다.
-    # 후보로는 WPmA, Superstar, Inventory insight, pollox's daily quest tracker, Urich's Skill Point Finder
-    import os
-    
-    print(os.getlogin())
-    # PTS 정보는 나중에...
-    AddonSavedVariablesPath = "C:/Users/" + format(os.getlogin()) + "/OneDrive/Documents/Elder Scrolls Online/live/SavedVariables"
-    print(AddonSavedVariablesPath)
-    for (root, directories, files) in os.walk(AddonSavedVariablesPath):
-        for file in files:
-            """
-            file_path = os.path.join(root, file)
-            print(file_path)
-            print(file)
-            """
-            if file == 'WPamA.lua':
-                AddonSavedVariableFile = open(os.path.join(root, file), 'r')
-                # 파일 파이썬이 이해할 수 있는 형태로
-                # 파일 데이터베이스로 ... 그러면 Extract가 아니잖아?
-                AddonSavedVariableFile.close
-            if file == 'USPF.lua':
-                #import subprocess
-                #result = subprocess.check_output(['lua', '-l', 'USPFUploader', 'e', 'test()'])
-                print( )
-
-import os
-f = open("C:/Users/" + format(os.getlogin()) + "/OneDrive/Documents/Elder Scrolls Online/live/SavedVariables"+'/USPF.lua')
-data = f.read()
-#print(data)
 from slpp import slpp as lua
-f.close()
+
+# Extract and upload 부분만 따서 프로그래밍 테스트중...
+# 이 아래가 while 문 아래로 들어가야한다.
+# Extract
+data ='{'
+with open("C:/Users/Public/Documents/Elder Scrolls Online/live/SavedVariables/USPF.lua", 'r') as file:
+    for line in file:
+        data += line
+data += '}'
+data = lua.decode(data)
+# 이 내부 구조는 원래 데이터를 따름.
+name = 0
+for AccountName, AccountValue in data['USPF_Settings']['Default'].items():
+    # 캐릭터 Key값으로만 나와있어서 이름을 정리한 사전
+    CharacterList = {data['USPF_Settings']['Default'][AccountName]['$AccountWide']["charInfo"][key]["charId"] : data['USPF_Settings']['Default'][AccountName]['$AccountWide']["charInfo"][key]["charName"]
+                     for key, value in data['USPF_Settings']['Default'][AccountName]['$AccountWide']["charInfo"].items()}
+    for CharacterIDKey, CharacterValue in data['USPF_Settings']['Default'][AccountName]['$AccountWide']["ptsData"].items():
+        # 여기서 ID는 ESOPI 사용자의 ID라서 중복되지 않게 넣어주었다.
+        message = {"ID" : str(name),
+                   "CharacterID" : int(CharacterIDKey),
+                   "CharacterName" : CharacterList[CharacterIDKey],
+                   "UnassignedSkillPoints" : int(data['USPF_Settings']['Default'][AccountName]['$AccountWide']["ptsData"][CharacterIDKey]['GenTot']) + 3000}
+        print(message)
+        name += 1
+# Update
+        import requests
+        r = requests.post('http://3.35.209.143/process_data.php', data = message)
+        print(r.text, "endswith")
