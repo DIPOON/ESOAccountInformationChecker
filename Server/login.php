@@ -9,8 +9,7 @@
   }
   else
   {
-      echo '<script> alert("안비었네요."); </script>';
-      $Connected = mysqli_connect(host, username, password, databasename);
+      $Connected = mysqli_connect('localhost', 'root', 'Rlrir@95', 'ESOPI');
       $PasswordSQL = "SELECT PW FROM member WHERE ID = '".$Username."';";
       $PasswordResult = mysqli_query($Connected, $PasswordSQL);
       //header('location:'.$_SERVER['HTTP_REFERER']);
@@ -20,23 +19,22 @@
       }
       if (is_null($EncryptedPassword))
       {
-	      $NoUserID = 1;
-	      echo '<script> alert("아이디가 맞는게 없나본대요 ."); </script>';
+              $NoUserID = 1;
+              header('HTTP/1.1 401 Unauthorized');
       }
       else
       {
-	  if(password_verify($Password, $EncryptedPassword))
-	  {
-	      session_start();
-	      $_SESSION['user_id'] = $Username;
-	      header('Location: index.php');
-	  }
+          if(password_verify($Password, $EncryptedPassword))
+          {
+              session_start();
+              $_SESSION['user_id'] = $Username;
+              header('Location: index.php');
+          }
           else
-	  {
-	      $NoPassword = 1;
-	      echo '<script> alert("비밀번호 맞는게 없나본대요 ."); </script>';
-              //header('Location: index.php');
-	  }
+          {
+              $NoPassword = 1;
+              header('HTTP/1.1 401 Unauthorized');
+          }
       }
   }
 ?>
